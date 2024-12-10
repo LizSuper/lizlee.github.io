@@ -1,6 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的个人博客</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人博客</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
+    <header>
+        <h1>我的个人博客</h1>
+        <nav>
+            <a href="#">首页</a>
+            <a href="#about">关于我</a>
+            <a href="#contact">联系</a>
+        </nav>
+    </header>
+
+    <div class="container layout">
+        <main class="main-content">
+            <!-- 文章列表区域 -->
+            <section class="article-list">
+                <article>
+                    <h2><a href="#">初识Web开发之路</a></h2>
+                    <p class="meta">2024年12月10日 · 分类：前端开发</p>
+                    <p>在这篇文章中，我将分享我初入Web开发领域的经历和感悟。从HTML的标签开始，到CSS的样式设计，再到JavaScript为页面增添互动，构建自己的网站让我对互联网世界有了全新的理解。</p>
+                </article>
+                <article>
+                    <h2><a href="#">为什么要搭建个人博客？</a></h2>
+                    <p class="meta">2024年11月25日 · 分类：个人成长</p>
+                    <p>拥有一个个人博客不仅能够记录你的学习历程、工作经验和生活点滴，也能与更多志同道合的人交流思想，互相启发。同时，在求职或展示个人品牌时，一个风格清晰、内容丰富的网站能为你加分。</p>
+                </article>
+                <article>
+                    <h2><a href="#">简化你的开发流程——使用CSS框架</a></h2>
+                    <p class="meta">2024年11月10日 · 分类：前端工具</p>
+                    <p>当你频繁地为页面进行排版和美化时，使用CSS框架（如Bootstrap、Tailwind CSS）可以大大提升开发效率和一致性。本文将介绍如何快速上手以及使用中的注意事项。</p>
+                </article>
+            </section>
+            
+            <!-- 关于我 -->
+            <section id="about" style="margin-top: 3rem;">
+                <h2>关于我</h2>
+                <p>你好！我是一名前端爱好者，热爱在互联网上搭建有趣的产品。通过这个博客，我将分享我在Web开发中的学习成果、项目经验，以及对于新技术的思考和尝试。我相信持续学习和实践是成长的关键。</p>
+            </section>
+
+            <!-- 联系方式 -->
+            <section id="contact" style="margin-top: 3rem;">
+                <h2>联系我</h2>
+                <p>如果你对我的内容感兴趣或有问题想要讨论，欢迎通过以下方式与我联系：</p>
+                <ul>
+                    <li>电子邮件：<a href="mailto:yourname@example.com">yourname@example.com</a></li>
+                    <li>GitHub：<a href="https://github.com/username" target="_blank">https://github.com/username</a></li>
+                    <li>LinkedIn：<a href="https://www.linkedin.com/in/yourprofile" target="_blank">yourprofile</a></li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <h3>推荐阅读</h3>
+            <ul>
+                <li><a href="#">前端面试指南</a></li>
+                <li><a href="#">CSS布局技巧合集</a></li>
+                <li><a href="#">JavaScript最佳实践</a></li>
+            </ul>
+
+            <h3 style="margin-top:2rem;">常用资源</h3>
+            <ul>
+                <li><a href="https://developer.mozilla.org/zh-CN/" target="_blank">MDN文档</a></li>
+                <li><a href="https://www.w3schools.com/" target="_blank">W3Schools</a></li>
+                <li><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <footer>
+        <p>© 2024 我的个人博客 | 由 GitHub Pages 免费托管</p>
+    </footer>
+</body>
+</html>
