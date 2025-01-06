@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Quick Notes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        body {
+            background: url('../images/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            padding: 20px;
+        }
+        .note {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .note-actions button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .note-actions .edit {
+            background-color: #49bf9d;
+            color: white;
+        }
+        .note-actions .delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .add-note-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #49bf9d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+        .modal-content textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content .save {
+            background-color: #49bf9d;
+            color: white;
+        }
+        .modal-content .cancel {
+            background-color: #e74c3c;
+            color: white;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button class="add-note-btn" id="addNoteBtn">Add Note</button>
+    <div class="container" id="notesContainer">
+        <!-- Notes will be displayed here -->
+    </div>
+
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <h2>Add a New Note</h2>
+            <textarea id="noteInput" placeholder="Type your note here..."></textarea><br>
+            <button class="save" id="saveNoteBtn">Save</button>
+            <button class="cancel" id="cancelNoteBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const notesContainer = document.getElementById('notesContainer');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const noteModal = document.getElementById('noteModal');
+        const noteInput = document.getElementById('noteInput');
+        const saveNoteBtn = document.getElementById('saveNoteBtn');
+        const cancelNoteBtn = document.getElementById('cancelNoteBtn');
+
+        let notes = [];
+
+        function renderNotes() {
+            notesContainer.innerHTML = '';
+            notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note';
+                noteElement.innerHTML = `
+                    <p>${note.content}</p>
+                    <p><small>Recorded at: ${note.time}</small></p>
+                    <div class="note-actions">
+                        <button class="edit" onclick="editNote(${index})">Edit</button>
+                        <button class="delete" onclick="deleteNote(${index})">Delete</button>
+                    </div>
+                `;
+                notesContainer.appendChild(noteElement);
+            });
+        }
+
+        function addNote(content) {
+            const time = new Date().toLocaleString();
+            notes.push({ content, time });
+            renderNotes();
+        }
+
+        function editNote(index) {
+            const newContent = prompt('Edit your note:', notes[index].content);
+            if (newContent !== null) {
+                notes[index].content = newContent;
+                notes[index].time = new Date().toLocaleString();
+                renderNotes();
+            }
+        }
+
+        function deleteNote(index) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes.splice(index, 1);
+                renderNotes();
+            }
+        }
+
+        addNoteBtn.addEventListener('click', () => {
+            noteInput.value = '';
+            noteModal.style.display = 'flex';
+        });
+
+        saveNoteBtn.addEventListener('click', () => {
+            const content = noteInput.value.trim();
+            if (content) {
+                addNote(content);
+                noteModal.style.display = 'none';
+            } else {
+                alert('Please enter some content.');
+            }
+        });
+
+        cancelNoteBtn.addEventListener('click', () => {
+            noteModal.style.display = 'none';
+        });
+
+        // Initial render (if needed, you can load initial notes here)
+        renderNotes();
+    </script>
+</body>
+</html>
