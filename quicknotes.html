@@ -13,7 +13,7 @@
             font-family: 'Arial', sans-serif;
         }
         .container {
-            padding: 20px;
+            padding: 50px 20px 20px;
         }
         .note {
             background: rgba(0, 0, 0, 0.6);
@@ -100,12 +100,23 @@
         <!-- Notes will be displayed here -->
     </div>
 
+    <!-- Add Note Modal -->
     <div class="modal" id="noteModal">
         <div class="modal-content">
             <h2>Add a New Note</h2>
-            <textarea id="noteInput" placeholder="Type your note here..."></textarea><br>
+            <textarea style="color: black;" id="noteInput" placeholder="Type your note here..."></textarea><br>
             <button class="save" id="saveNoteBtn">Save</button>
             <button class="cancel" id="cancelNoteBtn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this note?</p>
+            <button class="save" id="confirmDeleteBtn">Yes</button>
+            <button class="cancel" id="cancelDeleteBtn">No</button>
         </div>
     </div>
 
@@ -113,11 +124,15 @@
         const notesContainer = document.getElementById('notesContainer');
         const addNoteBtn = document.getElementById('addNoteBtn');
         const noteModal = document.getElementById('noteModal');
+        const deleteModal = document.getElementById('deleteModal');
         const noteInput = document.getElementById('noteInput');
         const saveNoteBtn = document.getElementById('saveNoteBtn');
         const cancelNoteBtn = document.getElementById('cancelNoteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 
         let notes = [];
+        let deleteIndex = null; // To track the index for deletion
 
         function renderNotes() {
             notesContainer.innerHTML = '';
@@ -128,8 +143,8 @@
                     <p>${note.content}</p>
                     <p><small>Recorded at: ${note.time}</small></p>
                     <div class="note-actions">
-                        <button class="edit" onclick="editNote(${index})">Edit</button>
-                        <button class="delete" onclick="deleteNote(${index})">Delete</button>
+                        <button class="edit" onclick="openEditModal(${index})">Edit</button>
+                        <button class="delete" onclick="openDeleteModal(${index})">Delete</button>
                     </div>
                 `;
                 notesContainer.appendChild(noteElement);
@@ -142,40 +157,61 @@
             renderNotes();
         }
 
-        function editNote(index) {
-            const newContent = prompt('Edit your note:', notes[index].content);
-            if (newContent !== null) {
-                notes[index].content = newContent;
-                notes[index].time = new Date().toLocaleString();
+        function openEditModal(index) {
+            noteInput.value = notes[index].content;
+            noteModal.style.display = 'flex';
+            saveNoteBtn.onclick = function () {
+                const newContent = noteInput.value.trim();
+                if (newContent) {
+                    notes[index].content = newContent;
+                    notes[index].time = new Date().toLocaleString();
+                    noteModal.style.display = 'none';
+                    renderNotes();
+                } else {
+                    alert('Please enter some content.');
+                }
+            };
+        }
+
+        function openDeleteModal(index) {
+            deleteIndex = index;
+            deleteModal.style.display = 'flex';
+        }
+
+        function confirmDelete() {
+            if (deleteIndex !== null) {
+                notes.splice(deleteIndex, 1);
+                deleteIndex = null;
                 renderNotes();
+                deleteModal.style.display = 'none';
             }
         }
 
-        function deleteNote(index) {
-            if (confirm('Are you sure you want to delete this note?')) {
-                notes.splice(index, 1);
-                renderNotes();
-            }
+        function cancelDelete() {
+            deleteIndex = null;
+            deleteModal.style.display = 'none';
         }
 
         addNoteBtn.addEventListener('click', () => {
             noteInput.value = '';
             noteModal.style.display = 'flex';
-        });
-
-        saveNoteBtn.addEventListener('click', () => {
-            const content = noteInput.value.trim();
-            if (content) {
-                addNote(content);
-                noteModal.style.display = 'none';
-            } else {
-                alert('Please enter some content.');
-            }
+            saveNoteBtn.onclick = function () {
+                const content = noteInput.value.trim();
+                if (content) {
+                    addNote(content);
+                    noteModal.style.display = 'none';
+                } else {
+                    alert('Please enter some content.');
+                }
+            };
         });
 
         cancelNoteBtn.addEventListener('click', () => {
             noteModal.style.display = 'none';
         });
+
+        confirmDeleteBtn.addEventListener('click', confirmDelete);
+        cancelDeleteBtn.addEventListener('click', cancelDelete);
 
         // Initial render (if needed, you can load initial notes here)
         renderNotes();
