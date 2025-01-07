@@ -1,220 +1,31 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Notes</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <style>
-        body {
-            background: url('images/bg.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: 'Arial', sans-serif;
-        }
-        .container {
-            padding: 50px 20px 20px;
-        }
-        .note {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        .note-actions button {
-            margin-left: 5px;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .note-actions .edit {
-            background-color: #49bf9d;
-            color: white;
-        }
-        .note-actions .delete {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .add-note-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #49bf9d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-            text-align: center;
-        }
-        .modal-content h2 {
-            margin-bottom: 20px;
-        }
-        .modal-content textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .modal-content button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .modal-content .save {
-            background-color: #49bf9d;
-            color: white;
-        }
-        .modal-content .cancel {
-            background-color: #e74c3c;
-            color: white;
-            margin-left: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/notes.css">
 </head>
 <body>
-    <button class="add-note-btn" id="addNoteBtn">Add Note</button>
-    <div class="container" id="notesContainer">
-        <!-- Notes will be displayed here -->
+    <div class="container">
+        <h1>Quick Notes</h1>
+        <button id="addNoteBtn" class="add-note-btn">Add Note</button>
+
+        <div id="notesList" class="notes-list">
+            <!-- Notes will be displayed here dynamically -->
+        </div>
     </div>
 
     <!-- Add Note Modal -->
-    <div class="modal" id="noteModal">
+    <div id="modal" class="modal">
         <div class="modal-content">
-            <h2>Add a New Note</h2>
-            <textarea style="color: black;" id="noteInput" placeholder="Type your note here..."></textarea><br>
-            <button class="save" id="saveNoteBtn">Save</button>
-            <button class="cancel" id="cancelNoteBtn">Cancel</button>
+            <h2>Add a Note</h2>
+            <textarea id="noteContent" placeholder="Enter your note..."></textarea>
+            <button id="saveNoteBtn">Save</button>
+            <button id="closeModalBtn">Cancel</button>
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteModal">
-        <div class="modal-content">
-            <h2>Confirm Delete</h2>
-            <p>Are you sure you want to delete this note?</p>
-            <button class="save" id="confirmDeleteBtn">Yes</button>
-            <button class="cancel" id="cancelDeleteBtn">No</button>
-        </div>
-    </div>
-
-    <script>
-        const notesContainer = document.getElementById('notesContainer');
-        const addNoteBtn = document.getElementById('addNoteBtn');
-        const noteModal = document.getElementById('noteModal');
-        const deleteModal = document.getElementById('deleteModal');
-        const noteInput = document.getElementById('noteInput');
-        const saveNoteBtn = document.getElementById('saveNoteBtn');
-        const cancelNoteBtn = document.getElementById('cancelNoteBtn');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-
-        let notes = [];
-        let deleteIndex = null; // To track the index for deletion
-
-        function renderNotes() {
-            notesContainer.innerHTML = '';
-            notes.forEach((note, index) => {
-                const noteElement = document.createElement('div');
-                noteElement.className = 'note';
-                noteElement.innerHTML = `
-                    <p>${note.content}</p>
-                    <p><small>Recorded at: ${note.time}</small></p>
-                    <div class="note-actions">
-                        <button class="edit" onclick="openEditModal(${index})">Edit</button>
-                        <button class="delete" onclick="openDeleteModal(${index})">Delete</button>
-                    </div>
-                `;
-                notesContainer.appendChild(noteElement);
-            });
-        }
-
-        function addNote(content) {
-            const time = new Date().toLocaleString();
-            notes.push({ content, time });
-            renderNotes();
-        }
-
-        function openEditModal(index) {
-            noteInput.value = notes[index].content;
-            noteModal.style.display = 'flex';
-            saveNoteBtn.onclick = function () {
-                const newContent = noteInput.value.trim();
-                if (newContent) {
-                    notes[index].content = newContent;
-                    notes[index].time = new Date().toLocaleString();
-                    noteModal.style.display = 'none';
-                    renderNotes();
-                } else {
-                    alert('Please enter some content.');
-                }
-            };
-        }
-
-        function openDeleteModal(index) {
-            deleteIndex = index;
-            deleteModal.style.display = 'flex';
-        }
-
-        function confirmDelete() {
-            if (deleteIndex !== null) {
-                notes.splice(deleteIndex, 1);
-                deleteIndex = null;
-                renderNotes();
-                deleteModal.style.display = 'none';
-            }
-        }
-
-        function cancelDelete() {
-            deleteIndex = null;
-            deleteModal.style.display = 'none';
-        }
-
-        addNoteBtn.addEventListener('click', () => {
-            noteInput.value = '';
-            noteModal.style.display = 'flex';
-            saveNoteBtn.onclick = function () {
-                const content = noteInput.value.trim();
-                if (content) {
-                    addNote(content);
-                    noteModal.style.display = 'none';
-                } else {
-                    alert('Please enter some content.');
-                }
-            };
-        });
-
-        cancelNoteBtn.addEventListener('click', () => {
-            noteModal.style.display = 'none';
-        });
-
-        confirmDeleteBtn.addEventListener('click', confirmDelete);
-        cancelDeleteBtn.addEventListener('click', cancelDelete);
-
-        // Initial render (if needed, you can load initial notes here)
-        renderNotes();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
